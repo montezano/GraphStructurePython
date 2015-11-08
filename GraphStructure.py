@@ -140,10 +140,6 @@ class GraphStructure(object):
         print closure
         print self.vertices[closure][aux_vertex]
         
-        # 20154117266958
-        # 20150117268625
-        # 20158117269943
-        #BD: 3466645
 graph = GraphStructure()
 graph.addVertice('A')
 graph.addVertice('B')
