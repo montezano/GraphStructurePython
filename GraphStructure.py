@@ -107,19 +107,33 @@ class GraphStructure(object):
                 print "all_adjacents"
                 print self.vertices[closure]
                 closure_to_aux_vertex = current_length + self.vertices[closure][aux_vertex]
-                if closure_to_aux_vertex < path_values[aux_vertex] and aux_vertex in verticesList:
-                    path_values[aux_vertex] = closure_to_aux_vertex
-                    path_vertices[aux_vertex] = closure
-                    if shortest_value >= closure_to_aux_vertex:
-                        shortest_value = closure_to_aux_vertex
-                        next_closure = aux_vertex
+                if aux_vertex in verticesList:
+                    if closure_to_aux_vertex < path_values[aux_vertex]:
+                            
+                        path_values[aux_vertex] = closure_to_aux_vertex
+                        path_vertices[aux_vertex] = closure
+                        if shortest_value >= closure_to_aux_vertex:
+                            shortest_value = closure_to_aux_vertex
+                            next_closure = aux_vertex
+                    else:
+                        if path_values[aux_vertex] < closure_to_aux_vertex:
+                            if shortest_value >= closure_to_aux_vertex:
+                                shortest_value = closure_to_aux_vertex
+                                next_closure = aux_vertex
                     
             verticesList.remove(closure)
             closure = next_closure
             current_length = path_values[closure]
             
-                
-        return path_vertices
+        aux_order = final
+        shortest_path = []
+        shortest_path.append(final)
+        while aux_order != initial:
+            aux_order = path_vertices[aux_order]
+            shortest_path.append(aux_order)
+            
+        shortest_path.reverse()
+        return shortest_path
         
     def printTest(self, aux_vertex):
         closure = self.vertices.keys()[0]
@@ -140,9 +154,10 @@ graph.addVertice('E')
 
 graph.connect('A', 'B', 3)
 graph.connect('B', 'C', 4)
-graph.connect('B', 'E', 12)
+graph.connect('B', 'E', 6)
 graph.connect('C', 'D', 2)
 graph.connect('D', 'E', 2)
+graph.connect('A', 'E', 5)
 
 # print graph.adjacentsOf('B')
 
