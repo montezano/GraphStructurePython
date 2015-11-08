@@ -1,107 +1,156 @@
-vertices = {}
+class GraphStructure(object):
+        
+    vertices = {}
 
-
-def addVertice(vertice):
-    adjacents = []
-    vertices[vertice] = adjacents
-
-def removeVertice(vertice):
-    adjacents = vertices[vertice]
-    for adjacent in adjacents:
-        aux_list = vertices[adjacent]
-        aux_list.remove(vertice)
-    del vertices[vertice]
-
-def connect(vertice1, vertice2):
-    vertices[vertice1].append(vertice2)
-    vertices[vertice2].append(vertice1)
-
-def disconect(vertice1, vertice2):
-    vertices[vertice1].remove(vertice2)
-    vertices[vertice2].remove(vertice1)
+    def __ini__(self):
+        pass
     
-def order():
-    return len(vertices)
+    def addVertice(self, vertex):
+        self.vertices[vertex] = {}
     
-def getVertices():
-    return vertices
-
-def getVertice():
-    return vertices.keys()[0]
+    def removeVertice(self, vertice):
+        adjacents = self.vertices[vertice]
+        for adjacent in adjacents:
+            self.vertices[adjacent].remove(vertice)
+        del self.vertices[vertice]
     
-def adjacentsOf(vertice):
-    return vertices[vertice]
-
-def degreeOf(vertice):
-    return len(vertices[vertice])
+    def connect(self, vertice1, vertice2, value):
+        self.vertices[vertice1].update({vertice2: value})
+        self.vertices[vertice2].update({vertice1: value})
     
-def isRegular():
-    size = len(vertices.values()[0])
-    for vertice in vertices:
-        if not len(vertice.keys) == size:
-            return False
-    return True
+    def disconect(self, vertice1, vertice2):
+        self.vertices[vertice1].remove(vertice2)
+        self.vertices[vertice2].remove(vertice1)
+        
+    def order(self):
+        return len(self.vertices)
+        
+    def getVertices(self):
+        return self.vertices
     
-def isComplete():
-    degree = len(vertices) - 1
-    for vertice in vertices:
-        if len(vertice.values()) != degree:
-            return False
-    return True
-
-def transitiveClosureOf(vertex):
-    closure = []
-    transitiveClosure(vertex, closure)
-    return closure
+    def getVertice(self):
+        return self.vertices.keys()[0]
+        
+    def adjacentsOf(self, vertice):
+        return self.vertices[vertice].keys()
     
-    
-def transitiveClosure(vertex, vertexList):
-    if vertex not in vertexList:
-        vertexList.append(vertex)
-        for adjacent in vertices[vertex]:
-            transitiveClosure(adjacent, vertexList)
-
-def connected():
-    if vertices:
-        closure = transitiveClosureOf(vertices.keys()[0])
-        for vertex in vertices:
-            if vertex not in closure:
+    def degreeOf(self, vertice):
+        return len(self.vertices[vertice])
+        
+    def isRegular(self):
+        size = len(self.vertices.values()[0])
+        for vertice in self.vertices:
+            if not len(vertice.keys) == size:
                 return False
         return True
-    return False
-    
-
-def findCicle():
-    visited = []
-    return connected() and not findCicleOf(vertices.keys()[0], vertices.keys()[0], visited)
-    
-def findCicleOf(currentVertex, lastVertex, visited):
-    if currentVertex in visited:
+        
+    def isComplete(self):
+        degree = len(self.vertices) - 1
+        for vertice in self.vertices:
+            if len(vertice.values()) != degree:
+                return False
         return True
-    visited.append(currentVertex)
-    for adjacent in vertices[currentVertex]:
-        if adjacent != lastVertex:
-            if findCicleOf(adjacent, currentVertex, visited):
-                return True
-    visited.remove(currentVertex)
-    return False
     
-addVertice(1)
-addVertice(2)
-addVertice(3)
-addVertice(4)
+    def transitiveClosureOf(self, vertex):
+        closure = []
+        self.transitiveClosure(vertex, closure)
+        return closure
+        
+        
+    def transitiveClosure(self, vertex, vertexList):
+        if vertex not in vertexList:
+            vertexList.append(vertex)
+            for adjacent in self.vertices[vertex].keys():
+                self.transitiveClosure(adjacent, vertexList)
+    
+    def connected(self):
+        if self.vertices:
+            closure = self.transitiveClosureOf(self.vertices.keys()[0])
+            for vertex in self.vertices:
+                if vertex not in closure:
+                    return False
+            return True
+        return False
+        
+    
+    def findCicle(self):
+        visited = []
+        return self.connected() and not self.findCicleOf(self.vertices.keys()[0], self.vertices.keys()[0], visited)
+        
+    def findCicleOf(self, currentVertex, lastVertex, visited):
+        if currentVertex in visited:
+            return True
+        visited.append(currentVertex)
+        for adjacent in self.vertices[currentVertex]:
+            if adjacent != lastVertex:
+                if self.findCicleOf(adjacent, currentVertex, visited):
+                    return True
+        visited.remove(currentVertex)
+        return False
+    
+    def shortestPath(self, initial, final):
+        verticesList = self.vertices.keys()
+        
+        path_vertices = dict.fromkeys(self.vertices.keys(), initial)
+        path_values = dict.fromkeys(self.vertices.keys(), 3654654564546)
+        closure = initial
+        current_length = 0
+        next_closure = closure        
+        while verticesList:
+            shortest_value = 654687877463357456
+
+            for aux_vertex in self.vertices[closure].keys():
+                print "closure"
+                print closure
+                print "adjacent"
+                print aux_vertex
+                print "all_adjacents"
+                print self.vertices[closure]
+                closure_to_aux_vertex = current_length + self.vertices[closure][aux_vertex]
+                if closure_to_aux_vertex < path_values[aux_vertex] and aux_vertex in verticesList:
+                    path_values[aux_vertex] = closure_to_aux_vertex
+                    path_vertices[aux_vertex] = closure
+                    if shortest_value >= closure_to_aux_vertex:
+                        shortest_value = closure_to_aux_vertex
+                        next_closure = aux_vertex
+                    
+            verticesList.remove(closure)
+            closure = next_closure
+            current_length = path_values[closure]
+            
+                
+        return path_vertices
+        
+    def printTest(self, aux_vertex):
+        closure = self.vertices.keys()[0]
+        print closure
+        print self.vertices[closure][aux_vertex]
+        
+        # 20154117266958
+        # 20150117268625
+        # 20158117269943
+        #BD: 3466645
+graph = GraphStructure()
+graph.addVertice('A')
+graph.addVertice('B')
+graph.addVertice('C')
+graph.addVertice('D')
+graph.addVertice('E')
 #connect(3, 2)
 
-connect(1, 2)
-connect(1, 3)
+graph.connect('A', 'B', 3)
+graph.connect('B', 'C', 4)
+graph.connect('B', 'E', 12)
+graph.connect('C', 'D', 2)
+graph.connect('D', 'E', 2)
 
-for adjacent in adjacentsOf(1):
-    print adjacent
+# print graph.adjacentsOf('B')
 
-print transitiveClosureOf(1)
+# print graph.degreeOf('C')
+
+# print graph.findCicle()
+
+print graph.shortestPath('A', 'E')
 
 
-print degreeOf(1)
-
-print findCicle()
 
